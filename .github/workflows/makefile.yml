@@ -1,0 +1,27 @@
+name: CI / Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Setup Maven Action
+      uses: s4u/setup-maven-action@v1.9.0
+
+    - uses: rhysd/action-setup-vim@v1
+      with:
+        neovim: true
+
+    - name: Install dependencies
+      run: make install
+
+    - name: Run tests
+      run: make test
