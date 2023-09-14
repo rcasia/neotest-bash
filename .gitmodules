@@ -1,0 +1,9 @@
+[submodule "dependencies/neotest"]
+	path = dependencies/neotest
+	url = https://github.com/nvim-neotest/neotest
+[submodule "dependencies/nvim-treesitter"]
+	path = dependencies/nvim-treesitter
+	url = https://github.com/nvim-treesitter/nvim-treesitter.git
+[submodule "dependencies/plenary.nvim"]
+	path = dependencies/plenary.nvim
+	url = https://github.com/nvim-lua/plenary.nvim.git
