@@ -9,6 +9,8 @@ test-fail-fast:
 
 install:
 	git submodule update --init --recursive
+
+install-parser: install
 	nvim --headless -u tests/minimal_init.vim -c "TSInstallSync bash | quit"
 
 validate:
