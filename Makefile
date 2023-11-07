@@ -1,4 +1,3 @@
-
 all: install test
 
 test: 
@@ -6,12 +5,14 @@ test:
 
 test-fail-fast:
 	./scripts/test --fail-fast
-
-install:
+update:
 	git submodule update --init --recursive
 
-install-parser: install
+install: clean update
 	nvim --headless -u tests/minimal_init.vim -c "TSInstallSync bash | quit"
+
+clean:
+	rm -rf dependencies
 
 validate:
 	stylua --check .
