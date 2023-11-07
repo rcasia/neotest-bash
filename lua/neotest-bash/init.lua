@@ -40,7 +40,7 @@ end
 ---@param file_path string Absolute file path
 ---@return neotest.Tree | nil
 function NeotestBashAdapter.discover_positions(file_path)
-	return PositionsDiscoverer:discover_positions(file_path)
+	return PositionsDiscoverer.discover_positions(file_path)
 end
 
 ---@param args neotest.RunArgs
