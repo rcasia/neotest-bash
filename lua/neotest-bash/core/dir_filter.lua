@@ -1,27 +1,6 @@
-local context_manager = require("plenary.context_manager")
-local with = context_manager.with
-local open = context_manager.open
+local read_dot_env = require("neotest-bash.core.util.read_dot_env")
 
 DirFilter = {}
-
--- @param path string
--- @return table<string, string>
-local function read_env_file(path)
-	local lines = {}
-	with(open(path, "r"), function(reader)
-		lines = reader:read("*a")
-	end)
-
-	lines = vim.split(lines, "\n")
-	local env_properties = {}
-	for _, line in ipairs(lines) do
-		local key, value = line:match("^([^=]+)=(.*)$")
-		if key ~= nil and value ~= nil then
-			env_properties[key] = value
-		end
-	end
-	return env_properties
-end
 
 ---Filter directories when searching for test files
 ---@async
@@ -31,15 +10,18 @@ end
 ---@return boolean
 function DirFilter.filter_dir(name, rel_path, root)
 	-- read .env file
-	local dot_env_properties = read_env_file(root .. ".env")
+	local dot_env_properties = read_dot_env(root .. ".env")
 
 	local test_dir = dot_env_properties["DEFAULT_PATH"]
-
-	if string.match(rel_path, test_dir) then
-		return true
+	if test_dir == nil then
+		return true -- allow all directories
 	end
 
-	return false
+	if string.match(rel_path, test_dir) then
+		return true -- allow specified directories
+	end
+
+	return false -- disallow all other directories
 end
 
 return DirFilter
