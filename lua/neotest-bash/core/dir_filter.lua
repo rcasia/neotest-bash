@@ -7,7 +7,7 @@ DirFilter = {}
 ---@param root string Root directory of project
 ---@return boolean
 function DirFilter.filter_dir(name, rel_path, root)
-	return false
+	return true
 end
 
 return DirFilter
