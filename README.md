@@ -3,7 +3,7 @@
 [Neotest](https://github.com/rcarriga/neotest) adapter for Bash, using Bashunit.
 
 ## Work in Progress
-:full_moon: :last_quarter_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon:
+:full_moon: :full_moon:  :full_moon: :last_quarter_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon:
 
 ## 🔧 Installation
 
