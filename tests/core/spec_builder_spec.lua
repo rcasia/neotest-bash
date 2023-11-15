@@ -25,8 +25,9 @@ describe("spec_builder", function()
 	it("should run command for a test file", function()
 		-- given
 		local args = mock_args_tree({
-			name = "test_it_works",
+			name = "test.sh",
 			path = "/home/user/project/test.sh",
+			type = "file",
 		})
 
 		local mocked_root = "/home/user/mocked/directory/"
@@ -38,6 +39,30 @@ describe("spec_builder", function()
 		-- then
 		local expected_spec = {
 			command = "./lib/bashunit /home/user/project/test.sh",
+			cwd = mocked_root,
+			symbol = "test.sh",
+		}
+
+		assert.are.same(expected_spec, result)
+	end)
+
+	it("should run command for a test function inside a test file", function()
+		-- given
+		local args = mock_args_tree({
+			name = "test_it_works",
+			path = "/home/user/project/test.sh",
+			type = "test",
+		})
+
+		local mocked_root = "/home/user/mocked/directory/"
+		mock_root_finder(mocked_root)
+
+		-- when
+		local result = plugin.build_spec(args)
+
+		-- then
+		local expected_spec = {
+			command = "./lib/bashunit /home/user/project/test.sh --filter test_it_works",
 			cwd = mocked_root,
 			symbol = "test_it_works",
 		}
