@@ -6,7 +6,8 @@
   <p> <a href="https://github.com/rcarriga/neotest">Neotest</a> adapter for Bash, using <a href="https://github.com/TypedDevs/bashunit">bashunit</a></p>
 </section>
 
-![preview](https://github.com/rcasia/neotest-bash/assets/31012661/2dd406b4-5cba-41b7-9e3c-fe68197fcd6c)
+![image](https://github.com/rcasia/neotest-bash/assets/31012661/e9c1c928-7136-4c29-a17c-cf70c971ca76)
+
 
 
 ## Work in Progress
