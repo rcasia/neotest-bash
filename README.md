@@ -6,6 +6,9 @@
   <p> <a href="https://github.com/rcarriga/neotest">Neotest</a> adapter for Bash, using <a href="https://github.com/TypedDevs/bashunit">bashunit</a></p>
 </section>
 
+![preview](https://github.com/rcasia/neotest-bash/assets/31012661/2dd406b4-5cba-41b7-9e3c-fe68197fcd6c)
+
+
 ## Work in Progress
 :full_moon: :full_moon:  :full_moon: :last_quarter_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon:
 
