@@ -5,7 +5,7 @@ SpecBuilder = {
 	---@param args neotest.RunArgs
 	---@return nil | neotest.RunSpec | neotest.RunSpec[]
 	build_spec = function(args)
-		local tree_data = args.tree.data()
+		local tree_data = args.tree:data()
 		local symbol = tree_data.name
 		local type = tree_data.type
 		local path = tree_data.path
