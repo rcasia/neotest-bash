@@ -1,36 +1,6 @@
-local xml = require("neotest.lib.xml")
-local scan = require("plenary.scandir")
-local context_manager = require("plenary.context_manager")
-local with = context_manager.with
-local open = context_manager.open
-local position_discoverer = require("neotest-bash.core.positions_discoverer")
+local ResultList = require("neotest-bash.util.result_list")
 
 ResultBuilder = {}
-
-local Results = {
-	_results = {},
-
-	new = function(self)
-		self.__index = self
-		return setmetatable({}, self)
-	end,
-
-	add_successful_result = function(self, result)
-		self._results[result.id] = {
-			status = "passed",
-		}
-	end,
-
-	add_failed_result = function(self, result)
-		self._results[result.id] = {
-			status = "failed",
-		}
-	end,
-
-	to_table = function(self)
-		return self._results
-	end,
-}
 
 ---@async
 ---@param spec neotest.RunSpec
@@ -38,16 +8,18 @@ local Results = {
 ---@param tree neotest.Tree
 ---@return table<string, neotest.Result>
 function ResultBuilder.build_results(spec, result, tree)
-	local results = Results:new()
+	local results = ResultList:new()
+	local is_file = string.match(spec.symbol, "_test.sh") ~= nil
 
-	for _, node in tree:iter_nodes() do
-		local node_data = node:data()
-
-		-- when the exit code is 0, the test passed
-		if result.code == 0 then
-			results:add_successful_result(node_data)
-		else
-			results:add_failed_result(node_data)
+	-- TODO: as bashunit does not provide reporting yet,
+	-- we run tests running one command per test funtion
+	-- so we do not expect to find files as spec.symbol
+	if not is_file then
+		for _, node in tree:iter_nodes() do
+			local node_data = node:data()
+			if node_data.name == spec.symbol then
+				results:add_result_with_code(node_data, result.code)
+			end
 		end
 	end
 

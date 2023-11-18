@@ -5,26 +5,32 @@ SpecBuilder = {
 	---@param args neotest.RunArgs
 	---@return nil | neotest.RunSpec | neotest.RunSpec[]
 	build_spec = function(args)
-		local tree_data = args.tree:data()
-		local symbol = tree_data.name
-		local type = tree_data.type
+		local tree = args.tree
+		local tree_data = tree:data()
 		local path = tree_data.path
 		local root = root_finder.findRoot(tree_data.path)
 
-		local command = CommandBuilder:new()
+		local commands = {}
+		for _, node in tree:iter_nodes() do
+			local node_data = node:data()
+			if node_data.type == "test" then
+				local command = CommandBuilder:new()
+				local symbol = node_data.name
 
-		if type == "test" then
-			command:filter(symbol)
+				command:filter(symbol)
+				command:executable("./lib/bashunit")
+				command:path(path)
+
+				-- add command to list of commands
+				commands[#commands + 1] = {
+					command = command:build(),
+					cwd = root,
+					symbol = symbol,
+				}
+			end
 		end
 
-		command:executable("./lib/bashunit")
-		command:path(path)
-
-		return {
-			command = command:build(),
-			cwd = root,
-			symbol = symbol,
-		}
+		return commands
 	end,
 }
 

@@ -14,6 +14,9 @@ describe("result_builder", function()
 		local result = {
 			code = 0,
 		}
+		local spec = {
+			symbol = "example_test.sh",
+		}
 
 		-- when
 		local results = plugin.results(spec, result, tree)
@@ -30,6 +33,9 @@ describe("result_builder", function()
 		local tree = read_tree_from_file("tests/fixtures/example_test.sh")
 		local result = {
 			code = 1,
+		}
+		local spec = {
+			symbol = "example_test.sh",
 		}
 
 		-- when
