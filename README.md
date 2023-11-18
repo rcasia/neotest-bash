@@ -9,10 +9,6 @@
 ![image](https://github.com/rcasia/neotest-bash/assets/31012661/e9c1c928-7136-4c29-a17c-cf70c971ca76)
 
 
-
-## Work in Progress
-:full_moon: :full_moon:  :full_moon: :last_quarter_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon: :new_moon:
-
 ## 🔧 Installation
 
 It requires [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
