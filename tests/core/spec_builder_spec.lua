@@ -1,4 +1,5 @@
 ---@diagnostic disable: undefined-global
+local async = require("nio").tests
 
 local plugin = require("neotest-bash")
 local root_finder = require("neotest-bash.core.root_finder")
@@ -22,7 +23,8 @@ local function mock_args_tree(data)
 end
 
 describe("spec_builder", function()
-	it("should run command for a test file", function()
+	-- TODO: pending until bashunit has reporting
+	pending("should run command for a test file", function()
 		-- given
 		local args = mock_args_tree({
 			name = "test.sh",
@@ -46,7 +48,8 @@ describe("spec_builder", function()
 		assert.are.same(expected_spec, result)
 	end)
 
-	it("should run command for a test function inside a test file", function()
+	-- TODO: pending until bashunit has reporting
+	pending("should run command for a test function inside a test file", function()
 		-- given
 		local args = mock_args_tree({
 			name = "test_it_works",
@@ -65,6 +68,36 @@ describe("spec_builder", function()
 			command = "./lib/bashunit /home/user/project/test.sh --filter test_it_works",
 			cwd = mocked_root,
 			symbol = "test_it_works",
+		}
+
+		assert.are.same(expected_spec, result)
+	end)
+
+	-- TODO: we run a list of commands until we have bashunit reporting
+	async.it("should run a list of commands from a tree node selection", function()
+		-- given
+		--
+		local path = "tests/fixtures/example_test.sh"
+		local tree = plugin.discover_positions(path)
+		local args = { tree = tree }
+		local mocked_root = "/home/user/mocked/directory/"
+		mock_root_finder(mocked_root)
+
+		-- when
+		local result = plugin.build_spec(args)
+
+		-- then
+		local expected_spec = {
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_1_plus_1",
+				cwd = mocked_root,
+				symbol = "test_sum_1_plus_1",
+			},
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_2_plus_2",
+				cwd = mocked_root,
+				symbol = "test_sum_2_plus_2",
+			},
 		}
 
 		assert.are.same(expected_spec, result)
