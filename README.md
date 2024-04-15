@@ -19,6 +19,8 @@ It requires [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter
 Plug 'rcasia/neotest-bash'
 ```
 
+> **NOTE**: this plugin expects the `bashunit` binary to be in `./lib/bashunit`.
+
 ## ⚙ Configuration
 ```lua
 require("neotest").setup({
