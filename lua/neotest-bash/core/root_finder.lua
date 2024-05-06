@@ -7,7 +7,6 @@ SpecBuilder = {}
 ---@param dir string @Directory to treat as cwd
 ---@return string | nil @Absolute root dir of test suite
 function SpecBuilder.findRoot(dir)
-	-- TODO: check what happens when it's a single file
 	local matchers = {
 		".git",
 		"lib",

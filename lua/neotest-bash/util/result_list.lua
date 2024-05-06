@@ -3,7 +3,7 @@ ExitCode = {
 }
 
 local ResultList = {
-	-- TODO: needs to be static until bashunit provides reporting
+	-- needs to be static
 	_results = {},
 
 	new = function(self)

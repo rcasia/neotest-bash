@@ -23,7 +23,6 @@ local function mock_args_tree(data)
 end
 
 describe("spec_builder", function()
-	-- TODO: pending until bashunit has reporting
 	pending("should run command for a test file", function()
 		-- given
 		local args = mock_args_tree({
@@ -48,7 +47,6 @@ describe("spec_builder", function()
 		assert.are.same(expected_spec, result)
 	end)
 
-	-- TODO: pending until bashunit has reporting
 	pending("should run command for a test function inside a test file", function()
 		-- given
 		local args = mock_args_tree({
@@ -73,7 +71,6 @@ describe("spec_builder", function()
 		assert.are.same(expected_spec, result)
 	end)
 
-	-- TODO: we run a list of commands until we have bashunit reporting
 	async.it("should run a list of commands from a tree node selection", function()
 		-- given
 		--
