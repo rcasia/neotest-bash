@@ -13,6 +13,12 @@ jobs:
 
     steps:
 
+    - name: Install tree-sitter-cli
+      uses: tree-sitter/setup-action@v2
+      with:
+        install-cli: true
+        install-lib: false
+
     - name: Setup Maven Action
       uses: s4u/setup-maven-action@v1.9.0
 

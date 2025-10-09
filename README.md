@@ -19,13 +19,29 @@ It requires [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter
 Plug 'rcasia/neotest-bash'
 ```
 
-> **NOTE**: this plugin expects the `bashunit` binary to be in `./lib/bashunit`.
+> **NOTE**: this plugin depends on the `bashunit` binary to work.
 
 ## ⚙ Configuration
 ```lua
 require("neotest").setup({
   adapters = {
     require("neotest-bash")
+  }
+})
+```
+
+You can optionally supply configuration settings:
+
+```lua
+require("neotest").setup({
+  adapters = {
+    require("neotest-bash")({
+      -- Custom bashunit path for the runner.
+      -- Can be a string (absolute or relative to repo root/cwd).
+      -- If not provided, the path will be inferred by checking for
+      -- lib/bashunit in your repo root/cwd, or for bashunit on the $PATH
+      executable = "path/to/bashunit/executable",
+    })
   }
 })
 ```
