@@ -5,57 +5,78 @@ local PositionsDiscoverer = require("neotest-bash.core.positions_discoverer")
 local SpecBuilder = require("neotest-bash.core.spec_builder")
 local ResultBuilder = require("neotest-bash.core.result_builder")
 
----@class neotest.Adapter
----@field name string
-NeotestBashAdapter = { name = "neotest-bash" }
+---@param config neotest-bash.AdapterConfig
+local function create_adapter(config)
+	---@class neotest.Adapter
+	---@field name string
+	local NeotestBashAdapter = { name = "neotest-bash" }
 
----Find the project root directory given a current directory to work from.
----Should no root be found, the adapter can still be used in a non-project context if a test file matches.
----@async
----@param dir string @Directory to treat as cwd
----@return string | nil @Absolute root dir of test suite
-function NeotestBashAdapter.root(dir)
-	return RootFinder.findRoot(dir)
+	---Find the project root directory given a current directory to work from.
+	---Should no root be found, the adapter can still be used in a non-project context if a test file matches.
+	---@async
+	---@param dir string @Directory to treat as cwd
+	---@return string | nil @Absolute root dir of test suite
+	function NeotestBashAdapter.root(dir)
+		return RootFinder.findRoot(dir)
+	end
+
+	---Filter directories when searching for test files
+	---@async
+	---@param name string Name of directory
+	---@param rel_path string Path to directory, relative to root
+	---@param root string Root directory of project
+	---@return boolean
+	function NeotestBashAdapter.filter_dir(name, rel_path, root)
+		return DirFilter.filter_dir(name, rel_path, root)
+	end
+
+	---@async
+	---@param file_path string
+	---@return boolean
+	function NeotestBashAdapter.is_test_file(file_path)
+		return FileChecker.isTestFile(file_path)
+	end
+
+	---Given a file path, parse all the tests within it.
+	---@async
+	---@param file_path string Absolute file path
+	---@return neotest.Tree | nil
+	function NeotestBashAdapter.discover_positions(file_path)
+		return PositionsDiscoverer.discover_positions(file_path)
+	end
+
+	---@param args neotest.RunArgs
+	---@return nil | neotest.RunSpec | neotest.RunSpec[]
+	function NeotestBashAdapter.build_spec(args)
+		return SpecBuilder.build_spec(args, config)
+	end
+
+	---@async
+	---@param spec neotest.RunSpec
+	---@param result neotest.StrategyResult
+	---@param tree neotest.Tree
+	---@return table<string, neotest.Result>
+	function NeotestBashAdapter.results(spec, result, tree)
+		return ResultBuilder.build_results(spec, result, tree)
+	end
+
+	return NeotestBashAdapter
 end
 
----Filter directories when searching for test files
----@async
----@param name string Name of directory
----@param rel_path string Path to directory, relative to root
----@param root string Root directory of project
----@return boolean
-function NeotestBashAdapter.filter_dir(name, rel_path, root)
-	return DirFilter.filter_dir(name, rel_path, root)
-end
+---@class neotest-bash.AdapterConfig
+---@field executable? string
+local defaults = {
+	executable = "lib/bashunit",
+}
 
----@async
----@param file_path string
----@return boolean
-function NeotestBashAdapter.is_test_file(file_path)
-	return FileChecker.isTestFile(file_path)
-end
+local M = create_adapter(defaults)
 
----Given a file path, parse all the tests within it.
----@async
----@param file_path string Absolute file path
----@return neotest.Tree | nil
-function NeotestBashAdapter.discover_positions(file_path)
-	return PositionsDiscoverer.discover_positions(file_path)
-end
+setmetatable(M, {
+	---@param opts? neotest-bash.AdapterConfig
+	__call = function(_, opts)
+		local options = vim.tbl_deep_extend("force", defaults, opts or {}) or {}
+		return create_adapter(options)
+	end,
+})
 
----@param args neotest.RunArgs
----@return nil | neotest.RunSpec | neotest.RunSpec[]
-function NeotestBashAdapter.build_spec(args)
-	return SpecBuilder.build_spec(args)
-end
-
----@async
----@param spec neotest.RunSpec
----@param result neotest.StrategyResult
----@param tree neotest.Tree
----@return table<string, neotest.Result>
-function NeotestBashAdapter.results(spec, result, tree)
-	return ResultBuilder.build_results(spec, result, tree)
-end
-
-return NeotestBashAdapter
+return M

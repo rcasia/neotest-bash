@@ -3,6 +3,7 @@ local async = require("nio").tests
 
 local plugin = require("neotest-bash")
 local root_finder = require("neotest-bash.core.root_finder")
+local bashunit_finder = require("neotest-bash.util.bashunit_finder")
 
 --- mock root finder
 local function mock_root_finder(mocked_root)
@@ -22,6 +23,12 @@ local function mock_args_tree(data)
 	}
 end
 
+local function mock_bashunit_finder(mocked_path)
+	bashunit_finder.findBashunit = function()
+		return mocked_path
+	end
+end
+
 describe("spec_builder", function()
 	pending("should run command for a test file", function()
 		-- given
@@ -33,6 +40,9 @@ describe("spec_builder", function()
 
 		local mocked_root = "/home/user/mocked/directory/"
 		mock_root_finder(mocked_root)
+
+		local mocked_bashunit_path = "./lib/bashunit"
+		mock_bashunit_finder(mocked_bashunit_path)
 
 		-- when
 		local result = plugin.build_spec(args)
@@ -58,6 +68,9 @@ describe("spec_builder", function()
 		local mocked_root = "/home/user/mocked/directory/"
 		mock_root_finder(mocked_root)
 
+		local mocked_bashunit_path = "./lib/bashunit"
+		mock_bashunit_finder(mocked_bashunit_path)
+
 		-- when
 		local result = plugin.build_spec(args)
 
@@ -80,6 +93,9 @@ describe("spec_builder", function()
 		local mocked_root = "/home/user/mocked/directory/"
 		mock_root_finder(mocked_root)
 
+		local mocked_bashunit_path = "./lib/bashunit"
+		mock_bashunit_finder(mocked_bashunit_path)
+
 		-- when
 		local result = plugin.build_spec(args)
 
@@ -98,5 +114,23 @@ describe("spec_builder", function()
 		}
 
 		assert.are.same(expected_spec, result)
+	end)
+
+	async.it("should throw an error if bashunit executable cannot be found", function()
+		-- given
+		--
+		local path = "tests/fixtures/example_test.sh"
+		local tree = plugin.discover_positions(path)
+		local args = { tree = tree }
+		local mocked_root = "/home/user/mocked/directory/"
+		mock_root_finder(mocked_root)
+
+		local mocked_bashunit_path = nil
+		mock_bashunit_finder(mocked_bashunit_path)
+
+		-- then
+		assert.has_error(function()
+			plugin.build_spec(args)
+		end)
 	end)
 end)
