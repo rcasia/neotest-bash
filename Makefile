@@ -9,7 +9,7 @@ update:
 	git submodule update --init --recursive
 
 install: clean update
-	nvim --headless -u tests/minimal_init.vim -c "lua require('nvim-treesitter.install').install('bash'):wait(300000)" -c "quit"
+	nvim --headless -u tests/testrc.vim -c "lua require('nvim-treesitter.install').install('bash'):wait(300000)" -c "quit"
 
 clean:
 	rm -rf dependencies

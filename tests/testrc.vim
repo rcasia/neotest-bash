@@ -5,4 +5,4 @@ set runtimepath+=./dependencies/nvim-treesitter
 set runtimepath+=./dependencies/nvim-nio
 runtime! plugin/plenary.vim
 runtime! plugin/filetypes.lua
-lua require('neotest')
+
