@@ -116,6 +116,103 @@ describe("spec_builder", function()
 		assert.are.same(expected_spec, result)
 	end)
 
+	async.it("should include config.args in command", function()
+		-- given
+		local path = "tests/fixtures/example_test.sh"
+		local tree = plugin.discover_positions(path)
+		local args = { tree = tree }
+		local mocked_root = "/home/user/mocked/directory/"
+		mock_root_finder(mocked_root)
+
+		local mocked_bashunit_path = "./lib/bashunit"
+		mock_bashunit_finder(mocked_bashunit_path)
+
+		local adapter = plugin({ args = { "--report-coverage" } })
+
+		-- when
+		local result = adapter.build_spec(args)
+
+		-- then
+		local expected_spec = {
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_1_plus_1 --report-coverage",
+				cwd = mocked_root,
+				symbol = "test_sum_1_plus_1",
+			},
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_2_plus_2 --report-coverage",
+				cwd = mocked_root,
+				symbol = "test_sum_2_plus_2",
+			},
+		}
+
+		assert.are.same(expected_spec, result)
+	end)
+
+	async.it("should include extra_args in command", function()
+		-- given
+		local path = "tests/fixtures/example_test.sh"
+		local tree = plugin.discover_positions(path)
+		local args = { tree = tree, extra_args = { "--verbose" } }
+		local mocked_root = "/home/user/mocked/directory/"
+		mock_root_finder(mocked_root)
+
+		local mocked_bashunit_path = "./lib/bashunit"
+		mock_bashunit_finder(mocked_bashunit_path)
+
+		-- when
+		local result = plugin.build_spec(args)
+
+		-- then
+		local expected_spec = {
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_1_plus_1 --verbose",
+				cwd = mocked_root,
+				symbol = "test_sum_1_plus_1",
+			},
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_2_plus_2 --verbose",
+				cwd = mocked_root,
+				symbol = "test_sum_2_plus_2",
+			},
+		}
+
+		assert.are.same(expected_spec, result)
+	end)
+
+	async.it("should merge config.args and extra_args", function()
+		-- given
+		local path = "tests/fixtures/example_test.sh"
+		local tree = plugin.discover_positions(path)
+		local args = { tree = tree, extra_args = { "--verbose" } }
+		local mocked_root = "/home/user/mocked/directory/"
+		mock_root_finder(mocked_root)
+
+		local mocked_bashunit_path = "./lib/bashunit"
+		mock_bashunit_finder(mocked_bashunit_path)
+
+		local adapter = plugin({ args = { "--report-coverage" } })
+
+		-- when
+		local result = adapter.build_spec(args)
+
+		-- then
+		local expected_spec = {
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_1_plus_1 --report-coverage --verbose",
+				cwd = mocked_root,
+				symbol = "test_sum_1_plus_1",
+			},
+			{
+				command = "./lib/bashunit tests/fixtures/example_test.sh --filter test_sum_2_plus_2 --report-coverage --verbose",
+				cwd = mocked_root,
+				symbol = "test_sum_2_plus_2",
+			},
+		}
+
+		assert.are.same(expected_spec, result)
+	end)
+
 	async.it("should throw an error if bashunit executable cannot be found", function()
 		-- given
 		--

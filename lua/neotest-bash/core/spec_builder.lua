@@ -17,6 +17,10 @@ SpecBuilder = {
 			error("bashunit not found")
 		end
 
+		local config_args = (config and config.args) or {}
+		local extra_args = args.extra_args or {}
+		local all_args = vim.list_extend(vim.list_extend({}, config_args), extra_args)
+
 		local commands = {}
 		for _, node in tree:iter_nodes() do
 			local node_data = node:data()
@@ -27,6 +31,7 @@ SpecBuilder = {
 				command:filter(symbol)
 				command:executable(bashunit_path)
 				command:path(path)
+				command:args(all_args)
 
 				-- add command to list of commands
 				commands[#commands + 1] = {

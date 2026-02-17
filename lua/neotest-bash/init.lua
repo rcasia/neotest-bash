@@ -65,8 +65,10 @@ end
 
 ---@class neotest-bash.AdapterConfig
 ---@field executable? string
+---@field args? string[]
 local defaults = {
 	executable = "lib/bashunit",
+	args = {},
 }
 
 local M = create_adapter(defaults)
