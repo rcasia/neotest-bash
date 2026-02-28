@@ -2,6 +2,7 @@ local CommandBuilder = {
 	_executable = "",
 	_path = "",
 	_filter = "",
+	_args = {},
 
 	--- @return CommandBuilder
 	new = function(self)
@@ -29,12 +30,22 @@ local CommandBuilder = {
 		return self
 	end,
 
+	---@param args string[] @additional CLI arguments
+	args = function(self, args)
+		self._args = args
+		return self
+	end,
+
 	--- @return string @command to run
 	build = function(self)
-		if self._filter == "" then
-			return self._executable .. " " .. self._path
+		local cmd = self._executable .. " " .. self._path
+		if self._filter ~= "" then
+			cmd = cmd .. " --filter " .. self._filter
 		end
-		return self._executable .. " " .. self._path .. " --filter " .. self._filter
+		if self._args and #self._args > 0 then
+			cmd = cmd .. " " .. table.concat(self._args, " ")
+		end
+		return cmd
 	end,
 }
 

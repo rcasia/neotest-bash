@@ -41,7 +41,36 @@ require("neotest").setup({
       -- If not provided, the path will be inferred by checking for
       -- lib/bashunit in your repo root/cwd, or for bashunit on the $PATH
       executable = "path/to/bashunit/executable",
+      -- Additional CLI arguments passed to bashunit on every run.
+      -- Useful for enabling coverage or other flags.
+      args = {},
     })
   }
 })
 ```
+
+### Passing extra arguments
+
+Use the `args` option to pass additional CLI flags to bashunit. For example, to enable coverage reporting:
+
+```lua
+require("neotest").setup({
+  adapters = {
+    require("neotest-bash")({
+      args = {
+        "--coverage",
+        "--coverage-paths", "bin",
+        "--coverage-report", vim.fn.getcwd() .. "/coverage/lcov.info",
+      },
+    })
+  }
+})
+```
+
+You can also pass one-off arguments via neotest's `extra_args` when running tests:
+
+```lua
+require("neotest").run.run({ extra_args = { "--report-coverage" } })
+```
+
+Arguments from both `args` (config) and `extra_args` (per-run) are merged together.
