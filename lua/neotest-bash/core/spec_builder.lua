@@ -42,6 +42,12 @@ SpecBuilder = {
 			end
 		end
 
+		if #commands == 0 then
+			-- neotest falls back to running the broken down tree when the
+			-- adapter cannot build a spec for the given position
+			return nil
+		end
+
 		return commands
 	end,
 }

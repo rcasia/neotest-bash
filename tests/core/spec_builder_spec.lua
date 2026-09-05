@@ -2,6 +2,7 @@
 local async = require("nio").tests
 
 local plugin = require("neotest-bash")
+local Tree = require("neotest.types.tree")
 local root_finder = require("neotest-bash.core.root_finder")
 local bashunit_finder = require("neotest-bash.util.bashunit_finder")
 
@@ -114,6 +115,33 @@ describe("spec_builder", function()
 		}
 
 		assert.are.same(expected_spec, result)
+	end)
+
+	it("should return nil when the tree contains no test positions", function()
+		-- given
+		local path = "tests/fixtures/no_test_functions_here_test.sh"
+		local tree = Tree.from_list({
+			{
+				type = "file",
+				name = "no_test_functions_here_test.sh",
+				path = path,
+				id = path,
+			},
+		}, function(position)
+			return position.id
+		end)
+		local args = { tree = tree, extra_args = {} }
+		local mocked_root = "/home/user/mocked/directory/"
+		mock_root_finder(mocked_root)
+
+		local mocked_bashunit_path = "./lib/bashunit"
+		mock_bashunit_finder(mocked_bashunit_path)
+
+		-- when
+		local result = plugin.build_spec(args)
+
+		-- then
+		assert.is_nil(result)
 	end)
 
 	async.it("should include config.args in command", function()
