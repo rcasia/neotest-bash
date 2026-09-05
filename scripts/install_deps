@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Clone pinned test dependencies into ./dependencies/ (gitignored).
+# Replaces the previous git submodule setup so local runs and CI resolve
+# identical revisions without submodule state in the repo.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+clone_dep() {
+  local name="$1" url="$2" rev="$3"
+  git clone --quiet "$url" "dependencies/${name}"
+  git -C "dependencies/${name}" checkout --quiet --detach "$rev"
+  echo "Installed ${name} @ $(git -C "dependencies/${name}" describe --tags --always)"
+}
+
+mkdir -p dependencies
+
+# Pinned by full commit sha so CI and local runs resolve identically.
+clone_dep neotest https://github.com/nvim-neotest/neotest 1c529a1ef9c82e8131e872368415cecc2bb86ea2 # v5.20.0
+clone_dep nvim-nio https://github.com/nvim-neotest/nvim-nio 21f5324bfac14e22ba26553caf69ec76ae8a7662 # v1.10.1
+clone_dep plenary.nvim https://github.com/nvim-lua/plenary.nvim b9fd5226c2f76c951fc8ed5923d85e4de065e509 # v0.1.4-38
+clone_dep nvim-treesitter https://github.com/nvim-treesitter/nvim-treesitter 20fc6b1270dddff7e16220e0a51d17614d41fd43
