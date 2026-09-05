@@ -8,7 +8,9 @@ local ResultList = {
 
 	new = function(self)
 		self.__index = self
-		return setmetatable({}, self)
+		local instance = setmetatable({}, self)
+		instance._results = {}
+		return instance
 	end,
 
 	add_successful_result = function(self, result)
