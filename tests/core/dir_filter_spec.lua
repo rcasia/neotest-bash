@@ -1,6 +1,7 @@
 ---@diagnostic disable: undefined-global
 
 local plugin = require("neotest-bash")
+local assertions = require("tests.assertions")
 
 describe("dir_filter", function()
 	it("should not filter dirs", function()
@@ -9,6 +10,6 @@ describe("dir_filter", function()
 		local root = root
 		local result = plugin.filter_dir(name, rel_path, root)
 
-		assert.is_true(result)
+		assertions.is_true(result)
 	end)
 end)

@@ -1,6 +1,7 @@
 {
   "diagnostics.globals": [
     "vim",
+    "MiniTest",
     "describe",
     "it",
     "assert",

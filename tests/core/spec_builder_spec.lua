@@ -1,5 +1,6 @@
 ---@diagnostic disable: undefined-global
 local async = require("nio").tests
+local assertions = require("tests.assertions")
 
 local plugin = require("neotest-bash")
 local Tree = require("neotest.types.tree")
@@ -13,17 +14,6 @@ local function mock_root_finder(mocked_root)
 	end
 end
 
-local function mock_args_tree(data)
-	return {
-		tree = {
-			data = function()
-				return data
-			end,
-		},
-		extra_args = {},
-	}
-end
-
 local function mock_bashunit_finder(mocked_path)
 	bashunit_finder.findBashunit = function()
 		return mocked_path
@@ -31,58 +21,12 @@ local function mock_bashunit_finder(mocked_path)
 end
 
 describe("spec_builder", function()
-	pending("should run command for a test file", function()
-		-- given
-		local args = mock_args_tree({
-			name = "test.sh",
-			path = "/home/user/project/test.sh",
-			type = "file",
-		})
-
-		local mocked_root = "/home/user/mocked/directory/"
-		mock_root_finder(mocked_root)
-
-		local mocked_bashunit_path = "./lib/bashunit"
-		mock_bashunit_finder(mocked_bashunit_path)
-
-		-- when
-		local result = plugin.build_spec(args)
-
-		-- then
-		local expected_spec = {
-			command = "./lib/bashunit /home/user/project/test.sh",
-			cwd = mocked_root,
-			symbol = "test.sh",
-		}
-
-		assert.are.same(expected_spec, result)
+	it("should run command for a test file", function()
+		MiniTest.skip("pending from the plenary suite: assumes the old per-file")
 	end)
 
-	pending("should run command for a test function inside a test file", function()
-		-- given
-		local args = mock_args_tree({
-			name = "test_it_works",
-			path = "/home/user/project/test.sh",
-			type = "test",
-		})
-
-		local mocked_root = "/home/user/mocked/directory/"
-		mock_root_finder(mocked_root)
-
-		local mocked_bashunit_path = "./lib/bashunit"
-		mock_bashunit_finder(mocked_bashunit_path)
-
-		-- when
-		local result = plugin.build_spec(args)
-
-		-- then
-		local expected_spec = {
-			command = "./lib/bashunit /home/user/project/test.sh --filter test_it_works",
-			cwd = mocked_root,
-			symbol = "test_it_works",
-		}
-
-		assert.are.same(expected_spec, result)
+	it("should run command for a test function inside a test file", function()
+		MiniTest.skip("pending from the plenary suite: mock tree lacks iter_nodes()")
 	end)
 
 	async.it("should run a list of commands from a tree node selection", function()
@@ -114,7 +58,7 @@ describe("spec_builder", function()
 			},
 		}
 
-		assert.are.same(expected_spec, result)
+		assertions.same(expected_spec, result)
 	end)
 
 	it("should return nil when the tree contains no test positions", function()
@@ -141,7 +85,7 @@ describe("spec_builder", function()
 		local result = plugin.build_spec(args)
 
 		-- then
-		assert.is_nil(result)
+		assertions.is_nil(result)
 	end)
 
 	async.it("should include config.args in command", function()
@@ -174,7 +118,7 @@ describe("spec_builder", function()
 			},
 		}
 
-		assert.are.same(expected_spec, result)
+		assertions.same(expected_spec, result)
 	end)
 
 	async.it("should include extra_args in command", function()
@@ -205,7 +149,7 @@ describe("spec_builder", function()
 			},
 		}
 
-		assert.are.same(expected_spec, result)
+		assertions.same(expected_spec, result)
 	end)
 
 	async.it("should merge config.args and extra_args", function()
@@ -238,7 +182,7 @@ describe("spec_builder", function()
 			},
 		}
 
-		assert.are.same(expected_spec, result)
+		assertions.same(expected_spec, result)
 	end)
 
 	async.it("should throw an error if bashunit executable cannot be found", function()
@@ -254,7 +198,7 @@ describe("spec_builder", function()
 		mock_bashunit_finder(mocked_bashunit_path)
 
 		-- then
-		assert.has_error(function()
+		assertions.has_error(function()
 			plugin.build_spec(args)
 		end)
 	end)

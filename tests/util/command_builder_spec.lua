@@ -1,5 +1,6 @@
 ---@diagnostic disable: undefined-global
 local CommandBuilder = require("neotest-bash.util.command_builder")
+local assertions = require("tests.assertions")
 
 describe("command_builder", function()
 	describe("args", function()
@@ -8,7 +9,7 @@ describe("command_builder", function()
 			cmd:executable("./lib/bashunit")
 			cmd:path("test.sh")
 
-			assert.are.same("./lib/bashunit test.sh", cmd:build())
+			assertions.same("./lib/bashunit test.sh", cmd:build())
 		end)
 
 		it("should build command with empty args table", function()
@@ -17,7 +18,7 @@ describe("command_builder", function()
 			cmd:path("test.sh")
 			cmd:args({})
 
-			assert.are.same("./lib/bashunit test.sh", cmd:build())
+			assertions.same("./lib/bashunit test.sh", cmd:build())
 		end)
 
 		it("should build command with a single arg", function()
@@ -26,7 +27,7 @@ describe("command_builder", function()
 			cmd:path("test.sh")
 			cmd:args({ "--report-coverage" })
 
-			assert.are.same("./lib/bashunit test.sh --report-coverage", cmd:build())
+			assertions.same("./lib/bashunit test.sh --report-coverage", cmd:build())
 		end)
 
 		it("should build command with multiple args", function()
@@ -35,7 +36,7 @@ describe("command_builder", function()
 			cmd:path("test.sh")
 			cmd:args({ "--report-coverage", "--verbose" })
 
-			assert.are.same("./lib/bashunit test.sh --report-coverage --verbose", cmd:build())
+			assertions.same("./lib/bashunit test.sh --report-coverage --verbose", cmd:build())
 		end)
 
 		it("should build command with filter and args", function()
@@ -45,7 +46,7 @@ describe("command_builder", function()
 			cmd:filter("test_it_works")
 			cmd:args({ "--report-coverage" })
 
-			assert.are.same("./lib/bashunit test.sh --filter test_it_works --report-coverage", cmd:build())
+			assertions.same("./lib/bashunit test.sh --filter test_it_works --report-coverage", cmd:build())
 		end)
 	end)
 end)
