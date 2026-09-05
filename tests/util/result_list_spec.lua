@@ -1,6 +1,7 @@
 ---@diagnostic disable: undefined-global
 
 local ResultList = require("neotest-bash.util.result_list")
+local assertions = require("tests.assertions")
 
 describe("result_list", function()
 	it("keeps results isolated per instance", function()
@@ -12,8 +13,8 @@ describe("result_list", function()
 		a:add_successful_result({ id = "a_only" })
 
 		-- then
-		assert.are.equal(1, vim.tbl_count(a:to_table()))
-		assert.are.equal(0, vim.tbl_count(b:to_table()))
+		assertions.equal(1, vim.tbl_count(a:to_table()))
+		assertions.equal(0, vim.tbl_count(b:to_table()))
 	end)
 
 	it("maps exit codes to passed/failed statuses", function()
@@ -26,7 +27,7 @@ describe("result_list", function()
 
 		-- then
 		local results = list:to_table()
-		assert.are.equal("passed", results["t1"].status)
-		assert.are.equal("failed", results["t2"].status)
+		assertions.equal("passed", results["t1"].status)
+		assertions.equal("failed", results["t2"].status)
 	end)
 end)

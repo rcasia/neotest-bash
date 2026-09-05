@@ -1,6 +1,7 @@
 ---@diagnostic disable: undefined-global
 
 local plugin = require("neotest-bash")
+local assertions = require("tests.assertions")
 local async = require("nio").tests
 
 local function read_tree_from_file(file_path)
@@ -23,9 +24,9 @@ describe("result_builder", function()
 
 		-- then
 		-- only the node whose name matches the symbol is reported, as passed
-		assert.are.equal(1, vim.tbl_count(results))
+		assertions.equal(1, vim.tbl_count(results))
 		for _, res in pairs(results) do
-			assert.are.equal("passed", res.status)
+			assertions.equal("passed", res.status)
 		end
 	end)
 
@@ -43,9 +44,9 @@ describe("result_builder", function()
 		local results = plugin.results(spec, result, tree)
 
 		-- then
-		assert.are.equal(1, vim.tbl_count(results))
+		assertions.equal(1, vim.tbl_count(results))
 		for _, res in pairs(results) do
-			assert.are.equal("failed", res.status)
+			assertions.equal("failed", res.status)
 		end
 	end)
 
@@ -63,6 +64,6 @@ describe("result_builder", function()
 		local results = plugin.results(spec, result, tree)
 
 		-- then
-		assert.are.equal(0, vim.tbl_count(results))
+		assertions.equal(0, vim.tbl_count(results))
 	end)
 end)

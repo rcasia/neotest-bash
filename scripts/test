@@ -1,28 +1,20 @@
 #!/bin/bash
+# Run tests with mini.test (bootstrap: scripts/minimal_init.lua).
+# mini.test's stdout reporter makes Neovim exit nonzero when any case fails
+# or errors, so no output scraping is needed.
 
-
-tempfile=$(mktemp)
-
+NVIM=${NVIM:-nvim}
+INIT=${INIT:-scripts/minimal_init.lua}
 
 if [[ -n $1 ]] && [[ $1 == "--fail-fast" ]]; then
   echo "Running tests with --fail-fast"
-  nvim --headless --noplugin -u tests/testrc.vim \
-    -c "PlenaryBustedDirectory tests/ {minimal_init = 'tests/testrc.vim', sequential = true, keep_going = false}" | tee "${tempfile}"
+  "$NVIM" --headless --noplugin -u "$INIT" \
+    -c "lua require('mini.test').run({ execute = { stop_on_error = true } })"
 elif [[ -n $1 ]]; then
-  nvim --headless --noplugin -u tests/testrc.vim -c "PlenaryBustedFile $1" | tee "${tempfile}"
+  echo "Running single test file: $1"
+  "$NVIM" --headless --noplugin -u "$INIT" \
+    -c "lua require('mini.test').run({ collect = { find_files = function() return { '$1' } end } })"
 else
-  nvim --headless --noplugin -u tests/testrc.vim \
-    -c "PlenaryBustedDirectory tests/ {minimal_init = 'tests/testrc.vim'}" | tee "${tempfile}"
+  "$NVIM" --headless --noplugin -u "$INIT" \
+    -c "lua require('mini.test').run()"
 fi
-
-# Plenary doesn't emit exit code 1 when tests have errors during setup
-errors=$(sed 's/\x1b\[[0-9;]*m//g' "${tempfile}" | awk '/(Errors|Failed) :/ {print $3}' | grep -v '0')
-
-rm "${tempfile}"
-
-if [[ -n $errors ]]; then
-  echo "Tests failed"
-  exit 1
-fi
-
-exit 0

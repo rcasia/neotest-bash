@@ -1,4 +1,5 @@
 local plugin = require("neotest-bash")
+local assertions = require("tests.assertions")
 local async = require("nio").tests
 
 local current_dir = vim.fn.expand("%:p:h")
@@ -18,11 +19,11 @@ describe("PositionDiscoverer", function()
 		local actual_test_name = test_function_node.name
 		local actual_test_name_2 = test_function_node_2.name
 
-		assert.are.equal("test_sum_1_plus_1", actual_test_name)
-		assert.are.equal("test_sum_2_plus_2", actual_test_name_2)
+		assertions.equal("test_sum_1_plus_1", actual_test_name)
+		assertions.equal("test_sum_2_plus_2", actual_test_name_2)
 
 		-- there is only one test function
-		assert.are.equal(2, #tree:children())
+		assertions.equal(2, #tree:children())
 	end)
 
 	async.it("ignores functions that are not tests", function()
@@ -35,6 +36,6 @@ describe("PositionDiscoverer", function()
 		--then
 		local children = tree:children()
 
-		assert.are.equal(0, #children)
+		assertions.equal(0, #children)
 	end)
 end)
