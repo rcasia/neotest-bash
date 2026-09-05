@@ -8,43 +8,61 @@ local function read_tree_from_file(file_path)
 end
 
 describe("result_builder", function()
-	async.it("should build results for successful tests", function()
+	async.it("should build a result for the test node matching the spec symbol", function()
 		-- given
 		local tree = read_tree_from_file("tests/fixtures/example_test.sh")
 		local result = {
 			code = 0,
 		}
 		local spec = {
-			symbol = "example_test.sh",
+			symbol = "test_sum_1_plus_1",
 		}
 
 		-- when
 		local results = plugin.results(spec, result, tree)
 
 		-- then
-		-- assert all tests passed by checking result table
+		-- only the node whose name matches the symbol is reported, as passed
+		assert.are.equal(1, vim.tbl_count(results))
 		for _, res in pairs(results) do
 			assert.are.equal("passed", res.status)
 		end
 	end)
 
-	async.it("should build results for failed tests", function()
+	async.it("should report a failed result when the exit code is non-zero", function()
 		-- given
 		local tree = read_tree_from_file("tests/fixtures/example_test.sh")
 		local result = {
 			code = 1,
 		}
 		local spec = {
-			symbol = "example_test.sh",
+			symbol = "test_sum_2_plus_2",
 		}
 
 		-- when
 		local results = plugin.results(spec, result, tree)
 
 		-- then
-		-- assert all tests failed by checking result table
+		assert.are.equal(1, vim.tbl_count(results))
 		for _, res in pairs(results) do
 			assert.are.equal("failed", res.status)
 		end
+	end)
+
+	async.it("should build no results when the symbol matches no node", function()
+		-- given
+		local tree = read_tree_from_file("tests/fixtures/example_test.sh")
+		local result = {
+			code = 0,
+		}
+		local spec = {
+			symbol = "test_that_does_not_exist",
+		}
+
+		-- when
+		local results = plugin.results(spec, result, tree)
+
+		-- then
+		assert.are.equal(0, vim.tbl_count(results))
 	end)
 end)
